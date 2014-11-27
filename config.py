@@ -18,6 +18,8 @@ options_desc = {
 
 class Config(object):
     SHOW_PREFIX = "show_"
+    SEPARATOR = ":"
+
     def __init__(self, args):
         self.args = args.strip()
 
@@ -76,15 +78,25 @@ class Config(object):
                              self._append_name(lang["native"]) + 
                              self._append_name(lang.get("native2", "")),
                              subtitle = lang["code"],
-                             arg = lang["code"],
+                             arg = self._generate_arg('lang', lang["code"]),
                              valid = True)
 
 
     def show_num(self, arg):
-        print "num1",arg
+        try:
+            value = int(arg)
+            if value <= 0 or value > 100:
+                self.wf.add_item("Value must be between 1 and 100")
+            else:
+                title = "Set to %d" %(value)
+                self.wf.add_item(title, 
+                                 arg = self._generate_arg('num', str(value)),
+                                 valid = True)
+        except ValueError:
+            self.wf.add_item(options_desc['num'])
 
     def show_config(self, arg):
-        print "config1", arg
+        self.wf.add_item("Open the config file", arg = "config", valid = True)
 
     def show_options_menu(self, options):
         for option in options:
@@ -103,6 +115,8 @@ class Config(object):
                         arg = "all",
                         valid = True)
                         
+    def _generate_arg(self, key, value):
+        return key + Config.SEPARATOR + value
 
 
 if __name__=="__main__":
