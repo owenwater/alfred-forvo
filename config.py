@@ -3,10 +3,11 @@
 import sys
 
 from workflow import Workflow
-
+from config_loader import ConfigLoader
 LOG = None
 
-lang_file = "lang.json"
+lang_file = "config/lang.json"
+user_file = "config/user.json"
 
 options=["lang", "num", "config"]
 options_desc = {
@@ -14,6 +15,8 @@ options_desc = {
     "num" : u"Set maximum number of words to be shown",
     "config" : u"Show config file",
 }
+
+user_loader = ConfigLoader(user_file, True)
 
 class Config(object):
     SHOW_PREFIX = "show_"
@@ -102,6 +105,9 @@ class Config(object):
             self.wf.add_item(options_desc[option],
                              subtitle = u"Current: ", #TODO + get current value
                              autocomplete = option + " ")
+
+    def save_update(self):
+        user_loader.save_item(self.args, Config.SEPARATOR)
 
     def _append_name(self, str):
         if str == u"":

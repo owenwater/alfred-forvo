@@ -5,7 +5,19 @@
 	<key>bundleid</key>
 	<string>zmin.forvo</string>
 	<key>connections</key>
-	<dict/>
+	<dict>
+		<key>E44497BC-6CB2-4825-9D9C-DF15E48510AE</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8047C334-E231-45AC-9FC6-7E024B029233</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+	</dict>
 	<key>createdby</key>
 	<string>Owen Min</string>
 	<key>description</key>
@@ -15,11 +27,78 @@
 	<key>name</key>
 	<string>Forvo</string>
 	<key>objects</key>
-	<array/>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string>#!/usr/bin/python
+
+import sys
+from config import Config
+
+if __name__=="__main__":
+    config = Config("{query}")
+    config.save_update()</string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>8047C334-E231-45AC-9FC6-7E024B029233</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>fconfig</string>
+				<key>script</key>
+				<string>#!/usr/bin/python
+
+from config import Config
+
+if __name__=="__main__":
+    config = Config("{query}")
+    config.execute()</string>
+				<key>title</key>
+				<string>Forvo Config</string>
+				<key>type</key>
+				<integer>3</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>E44497BC-6CB2-4825-9D9C-DF15E48510AE</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+	</array>
 	<key>readme</key>
 	<string></string>
 	<key>uidata</key>
-	<dict/>
+	<dict>
+		<key>8047C334-E231-45AC-9FC6-7E024B029233</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>E44497BC-6CB2-4825-9D9C-DF15E48510AE</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+	</dict>
 	<key>webaddress</key>
 	<string></string>
 </dict>
