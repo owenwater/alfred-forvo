@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import sys
-import math
 
 from workflow import Workflow
 
@@ -117,7 +116,6 @@ class Config(object):
                         
     def _generate_arg(self, key, value):
         return key + Config.SEPARATOR + value
-
 
 if __name__=="__main__":
     config= Config(' '.join(sys.argv[1:]))
