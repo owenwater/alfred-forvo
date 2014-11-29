@@ -32,7 +32,7 @@ class ConfigLoader(object):
 
     def save(self):
         with open(self.path, "w") as fp:
-            json.dump(self.config, fp)
+            json.dump(self.config, fp, indent=2)
 
     def __str__(self):
         return str(self.config)

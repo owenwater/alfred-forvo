@@ -9,14 +9,12 @@ LOG = None
 lang_file = "config/lang.json"
 user_file = "config/user.json"
 
-options=["lang", "num", "config"]
-options_desc = {
-    "lang" : u"Set search language",
-    "num" : u"Set maximum number of words to be shown",
-    "config" : u"Show config file",
+options = {
+    "lang" : { "desc": u"Set search language", "default" : u"all"},
+    "num" : { "desc": u"Set maximum number of words to be shown", "default" : u"10"},
+    "config" : { "desc": u"Open config file", "arg" : u"open_"},
 }
 
-user_loader = ConfigLoader(user_file, True)
 
 class Config(object):
     SHOW_PREFIX = "show_"
@@ -24,6 +22,7 @@ class Config(object):
 
     def __init__(self, args):
         self.args = args.strip()
+        self.user_loader = ConfigLoader(user_file, True)
 
     def execute(self):
         global LOG
@@ -34,7 +33,7 @@ class Config(object):
     
     def main(self, wf):
         if self.args == "":
-            self.show_options_menu(options)
+            self.show_options_menu(options.keys())
         else:
             self.handle_args()
         
@@ -42,11 +41,11 @@ class Config(object):
 
     def handle_args(self):
         argv = self.args.split()
-        show_options = filter(lambda option: option.startswith(argv[0]), options)
+        show_options = filter(lambda option: option.startswith(argv[0]), options.keys())
 
 
         if len(show_options) == 0:
-            show_options = options
+            show_options = options.keys()
         elif len(show_options) == 1 and hasattr(self, Config.SHOW_PREFIX+argv[0]):
             getattr(self, Config.SHOW_PREFIX+argv[0])(' '.join(argv[1:]))
             return
@@ -95,19 +94,24 @@ class Config(object):
                                  arg = self._generate_arg('num', str(value)),
                                  valid = True)
         except ValueError:
-            self.wf.add_item(options_desc['num'])
+            self.wf.add_item(options['num']['desc'])
 
     def show_config(self, arg):
         self.wf.add_item("Open the config file", arg = "config", valid = True)
 
     def show_options_menu(self, options):
         for option in options:
-            self.wf.add_item(options_desc[option],
-                             subtitle = u"Current: ", #TODO + get current value
-                             autocomplete = option + " ")
+            self._add_menu_item(option)
 
     def save_update(self):
-        user_loader.save_item(self.args, Config.SEPARATOR)
+        if hasattr(self, self.args):
+            getattr(self, self.args)()
+        else:
+            self.user_loader.save_item(self.args, Config.SEPARATOR)
+
+    def open_config(self):
+        import subprocess
+        subprocess.call(['open', user_file])
 
     def _append_name(self, str):
         if str == u"":
@@ -123,6 +127,20 @@ class Config(object):
     def _generate_arg(self, key, value):
         return key + Config.SEPARATOR + value
 
+    def _add_menu_item(self, option):
+        subtitle = self.user_loader.get(option, options[option].get('default', ""))
+        if subtitle:
+            subtitle = u"Current: " + subtitle
+
+        self.wf.add_item(options[option]['desc'],
+                         subtitle = subtitle,
+                         autocomplete = option + " ",
+                         valid = 'arg' in options[option],
+                         arg = options[option].get('arg', "") + option)
+
+
+
 if __name__=="__main__":
     config= Config(' '.join(sys.argv[1:]))
-    config.execute()
+    #config.execute()
+    config.save_update()
