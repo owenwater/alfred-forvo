@@ -29,7 +29,9 @@ class ForvoGateway(object):
 
     def word_search(self, word):
         name_key = self._generate_name_key(word_search_action, word)
-        response = self.wf.cached_data(name_key, lambda: self._send_word_search_request(word), max_age=ForvoGateway.expire_time)
+        response = self.wf.cached_data(name_key, 
+                                       lambda: self._send_word_search_request(word),
+                                       max_age=ForvoGateway.expire_time)
 
         total = response['attributes']['total']
         pagesize = response['attributes']['pagesize']
