@@ -6,6 +6,17 @@
 	<string>zmin.forvo</string>
 	<key>connections</key>
 	<dict>
+		<key>66611211-786D-4F90-A20A-06EFF521746D</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>9F53FA09-8A63-4095-B9EB-E1763F5A5D5E</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>E44497BC-6CB2-4825-9D9C-DF15E48510AE</key>
 		<array>
 			<dict>
@@ -31,24 +42,56 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>speak</string>
+				<key>runningsubtext</key>
+				<string>Loading...</string>
+				<key>script</key>
+				<string>#!/usr/bin/python
+
+import sys
+from main import Main
+
+if __name__=="__main__":
+    main = Main("{query}")
+    main.execute()</string>
+				<key>title</key>
+				<string>Speak word...</string>
+				<key>type</key>
+				<integer>3</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>66611211-786D-4F90-A20A-06EFF521746D</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>script</key>
 				<string>#!/usr/bin/python
 
-import sys
-from config import Config
+from speak import speak
 
 if __name__=="__main__":
-    config = Config("{query}")
-    config.save_update()</string>
+    speak("{query}")</string>
 				<key>type</key>
 				<integer>3</integer>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
-			<string>8047C334-E231-45AC-9FC6-7E024B029233</string>
+			<string>9F53FA09-8A63-4095-B9EB-E1763F5A5D5E</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -83,20 +126,54 @@ if __name__=="__main__":
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>script</key>
+				<string>#!/usr/bin/python
+
+import sys
+from config import Config
+
+if __name__=="__main__":
+    config = Config("{query}")
+    config.save_update()</string>
+				<key>type</key>
+				<integer>3</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>8047C334-E231-45AC-9FC6-7E024B029233</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string></string>
 	<key>uidata</key>
 	<dict>
+		<key>66611211-786D-4F90-A20A-06EFF521746D</key>
+		<dict>
+			<key>ypos</key>
+			<real>130</real>
+		</dict>
 		<key>8047C334-E231-45AC-9FC6-7E024B029233</key>
 		<dict>
 			<key>ypos</key>
-			<real>10</real>
+			<real>290</real>
+		</dict>
+		<key>9F53FA09-8A63-4095-B9EB-E1763F5A5D5E</key>
+		<dict>
+			<key>ypos</key>
+			<real>130</real>
 		</dict>
 		<key>E44497BC-6CB2-4825-9D9C-DF15E48510AE</key>
 		<dict>
 			<key>ypos</key>
-			<real>10</real>
+			<real>290</real>
 		</dict>
 	</dict>
 	<key>webaddress</key>

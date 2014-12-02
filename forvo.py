@@ -2,6 +2,7 @@
 
 import sys
 from workflow import web
+from config import options
 
 url_tem = "http://apifree.forvo.com/key/%s/format/json"
 lang_tem = "/language/%s"
@@ -19,8 +20,8 @@ class ForvoGateway(object):
 
     def __init__(self, config, wf):
         key = config['key']
-        lang = config['lang']
-        self.num = config['num']
+        lang = config.get('lang', options['lang']['default'])
+        self.num = config.get('num', options['num']['default'])
         self.url = self._generate_url(key, lang, self.num)
 
         self.wf = wf
@@ -64,6 +65,8 @@ class ForvoGateway(object):
             pronunciation = item['standard_pronunciation']
             parsed_item['language'] = pronunciation['langname']
             parsed_item['sound'] = pronunciation['pathmp3']
+            parsed_item['country'] = pronunciation['country']
+            parsed_item['rank'] = str(pronunciation['num_positive_votes']) + " up votes" 
             return parsed_item
         return [parse(item) for item in items]
             
@@ -99,11 +102,13 @@ class ForvoGateway(object):
 
 if __name__=="__main__":
     from workflow import Workflow
-    config = {
-        'lang':'all',
-        'num':'10',
-        'key':'6d47687b9aa5ee0354a4b37bef25f570',
-    }
+    from config_loader import ConfigLoader
+    config = ConfigLoader("config/user.json")
+    #config = {
+        #'lang':'all',
+        #'num':'10',
+        #'key':'6d47687b9aa5ee0354a4b37bef25f570',
+    #}
     gw = ForvoGateway(config, Workflow())
     r = gw.word_search(unicode(sys.argv[1], 'utf-8'))
     print r
