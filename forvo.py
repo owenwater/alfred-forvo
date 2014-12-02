@@ -37,6 +37,7 @@ class ForvoGateway(object):
         pagesize = response['attributes']['pagesize']
 
         if total == None:
+            #TODO: new way to handle total is None issue
             #total is None means there's error in response
             import json
             LOG.debug("ERROR: total is None")
@@ -53,7 +54,19 @@ class ForvoGateway(object):
             response = self._send_word_search_request(word)
             self.wf.cache_data(name_key, response)
 
-        return response['items']
+        return self._parse_json(response['items'])
+
+    def _parse_json(self, items):
+        def parse(item):
+            parsed_item = {}
+            parsed_item['word'] = item['original']
+            parsed_item['num'] = item['num_pronunciations']
+            pronunciation = item['standard_pronunciation']
+            parsed_item['language'] = pronunciation['langname']
+            parsed_item['sound'] = pronunciation['pathmp3']
+            return parsed_item
+        return [parse(item) for item in items]
+            
 
     def _send_word_search_request(self, word):
         search = search_tem %(word)
