@@ -60,7 +60,6 @@ class ForvoGateway(object):
         action = action_tem %(word_search_action)
 
         request_url = self.url + action + search
-        request_url = request_url.encode("UTF-8")
 
         response = self._send_request(request_url).json()
         return response
@@ -93,5 +92,5 @@ if __name__=="__main__":
         'key':'6d47687b9aa5ee0354a4b37bef25f570',
     }
     gw = ForvoGateway(config, Workflow())
-    r = gw.word_search('hello')
+    r = gw.word_search(unicode(sys.argv[1], 'utf-8'))
     print r
