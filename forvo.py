@@ -37,20 +37,7 @@ class ForvoGateway(object):
         total = response['attributes']['total']
         pagesize = response['attributes']['pagesize']
 
-        if total == None:
-            #TODO: new way to handle total is None issue
-            #total is None means there's error in response
-            import json
-            LOG.debug("ERROR: total is None")
-            LOG.debug("response: ")
-            LOG.debug(json.dumps(response, indent=2))
-
-            #clean error cache
-            self.wf.cache_data(name_key, None) 
-
-            #we still return what we got
-
-        elif int(pagesize) < int(self.num) and int(total) > int(pagesize): 
+        if int(pagesize) < int(self.num) and int(total) > int(pagesize): 
             #not enough entry be loaded and there're more remaine
             response = self._send_word_search_request(word)
             self.wf.cache_data(name_key, response)
@@ -72,12 +59,20 @@ class ForvoGateway(object):
             
 
     def _send_word_search_request(self, word):
-        search = search_tem %(word)
-        action = action_tem %(word_search_action)
+        while True:
+            search = search_tem %(word)
+            action = action_tem %(word_search_action)
 
-        request_url = self.url + action + search
+            request_url = self.url + action + search
 
-        response = self._send_request(request_url).json()
+            response = self._send_request(request_url).json()
+
+            total = response['attributes']['total']
+            if total == None:
+                LOG.debug("ERROR: total is None")
+            else:
+                break
+
         return response
 
     def _generate_name_key(self, key, search):
