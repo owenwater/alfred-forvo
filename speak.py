@@ -2,12 +2,34 @@
 from AppKit import NSSound
 from Foundation import NSURL
 from time import sleep
+from workflow import Workflow
 
+wf = Workflow()
+LOG = wf.logger
 
-def speak(url):
-    ns_url = NSURL.URLWithString_(url)
+def _get_sound_by_url(ns_url):
     sound = NSSound.alloc()
     sound.initWithContentsOfURL_byReference_(ns_url, False)
+    return sound
+
+def _get_sound_by_fname(fname):
+    sound = NSSound.alloc()
+    sound.initWithContentsOfFile_byReference_(fname, True)
+    return sound
+
+def _download_file(url):
+    import urllib
+    import os
+    _,_,name = url.rpartition('/')
+    filename = wf.cachefile(name) + ".mp3"
+    if not os.path.isfile(filename):
+        LOG.debug("retrieving file: "+url)
+        urllib.urlretrieve(url, filename)
+
+    return filename
+
+
+def _play_sound(sound):
     duration = sound.duration()
 
     sound.play()
@@ -17,8 +39,22 @@ def speak(url):
     sound.dealloc()
 
 
-if __name__=="__main__":
+def speak_stream(url):
+    ns_url = NSURL.URLWithString_(url)
+    sound = _get_sound_by_url(ns_url)
+    _play_sound(sound)
+    
+def speak_download(url):
+    filename = _download_file(url)
+    sound = _get_sound_by_fname(filename)
+    _play_sound(sound)
 
-    #url = "http://apifree.forvo.com/audio/333n1h211j373h1o2m3d2q2p1n3k3g23272k1n3p3b3o1k39253o2o213i3e232i3d312n391k1g242l393i3i3m2i39213q3d2q271b3f3k2c1f2l3f2b2l2c273i2f2b3j272g2g1f3b1g2o1h1i232c2p1k1n1i3f1n362g211t1t_1o292m2o3m3m2m1j2b322d2k2b392m3i362f3c1n2n371t1t"
-    url = "http://apifree.forvo.com/audio/2b2g1b362h3a3i3b323o2g1l1k293h2n34233l1o1i3j211o3f2o2f2m321l2b2g2l2c3l3n1l332k37232b313738362q252o1b3o32222g3h2k3f291k2b3h222g3a382f1g2n2p2m323b2b2l1g3b2j3d1j3f211n271i25211t1t_3p1n3d392e3c321g2f2a1j3l39212o331n1p3i381g211t1t"
-    speak(url)
+
+def speak(url):
+    return speak_download(url)
+
+if __name__=="__main__":
+    hello="http://apifree.forvo.com/audio/2c383o3q2d2p373b2c221f243i26353h221l2k2q3a332e342d1j2g362i2c2m283831222d3b1j341m3l2d3g2b1h2c3g363b3f1g2k252h282p2c3c2l372g21371m1i3q27363b1m1b1h2j3i3j2d3o311f2q2m2g2c3n3k371t1t_3q1j282d1n3o2a263p2j1h24253j2i3e3j233o3g353n1t1t"
+    ts = "http://apifree.forvo.com/audio/3o343l2f213f2e2a3a1g2f1k272f293n283m3p2n382k1i33243k353k3122211n322d1o1o1n3e3a3a293m3h382639322h3d2p1f312d3o243e3c213o3m382b3a1o352m1f1b282o282i3i3m3k242p2d381k3a3h2o3m262h1t1t_3o1l3g2h2b3k3o3n291k1j1g3i2a3p1j38272j332p3n1t1t"
+    speak(hello)
+    speak(ts)
