@@ -23,8 +23,9 @@ class Main(object):
         try:
             gateway = Gateway(self.config, wf)
             items = gateway.word_search(self.args)
-        except GatewayException:
-            self.wf.add_item("Forvo API seems down, please try again later")
+        except Exception as e:
+            self.wf.add_item("Forvo API seems down, please try again later", 
+                            subtitle = "Error: " + str(e),)
             self.wf.send_feedback()
             return
 

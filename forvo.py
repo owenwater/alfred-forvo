@@ -4,6 +4,7 @@ import sys
 from workflow import web
 from config import options
 from error import GatewayException
+from types import ListType
 
 url_tem = "http://apifree.forvo.com/key/%s/format/json"
 lang_tem = "/language/%s"
@@ -62,6 +63,7 @@ class ForvoGateway(object):
 
     def _send_word_search_request(self, word):
         count = 0 
+        error_msg = ""
         while count < 3:
             count += 1
 
@@ -72,15 +74,21 @@ class ForvoGateway(object):
                 request_url = self.url + action + search
 
                 response = self._send_request(request_url).json()
+                if type(response) == ListType:
+                    error_msg = response[0]
+                    raise GatewayException(error_msg)
                 total = response['attributes']['total']
                 if total == None:
                     LOG.debug("ERROR: total is None")
                 else:
                     return response
+            except GatewayException:
+                raise
             except Exception as e:
                 LOG.exception(e)
+                error_msg = str(e)
 
-        raise GatewayException()
+        raise GatewayException(error_msg)
 
 
     def _generate_name_key(self, key, search):
