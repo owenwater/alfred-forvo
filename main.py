@@ -5,6 +5,7 @@ from forvo import ForvoGateway as Gateway
 from workflow import Workflow
 from config_loader import ConfigLoader
 from config import user_file
+from error import GatewayException
 LOG = None
 
 class Main(object):
@@ -19,8 +20,14 @@ class Main(object):
         sys.exit(wf.run(self.main))
 
     def main(self, wf):
-        gateway = Gateway(self.config, wf)
-        items = gateway.word_search(self.args)
+        try:
+            gateway = Gateway(self.config, wf)
+            items = gateway.word_search(self.args)
+        except GatewayException:
+            self.wf.add_item("Forvo API seems down, please try again later")
+            self.wf.send_feedback()
+            return
+
         self._add_items(items)
         self.wf.send_feedback()
 

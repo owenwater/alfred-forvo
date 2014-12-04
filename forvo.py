@@ -3,6 +3,7 @@
 import sys
 from workflow import web
 from config import options
+from error import GatewayException
 
 url_tem = "http://apifree.forvo.com/key/%s/format/json"
 lang_tem = "/language/%s"
@@ -17,6 +18,7 @@ LOG = None
 class ForvoGateway(object):
 
     expire_time = 7200
+    timeout=10
 
     def __init__(self, config, wf):
         key = config['key']
@@ -59,21 +61,27 @@ class ForvoGateway(object):
             
 
     def _send_word_search_request(self, word):
-        while True:
-            search = search_tem %(word)
-            action = action_tem %(word_search_action)
+        count = 0 
+        while count < 3:
+            count += 1
 
-            request_url = self.url + action + search
+            try:
+                search = search_tem %(word)
+                action = action_tem %(word_search_action)
 
-            response = self._send_request(request_url).json()
+                request_url = self.url + action + search
 
-            total = response['attributes']['total']
-            if total == None:
-                LOG.debug("ERROR: total is None")
-            else:
-                break
+                response = self._send_request(request_url).json()
+                total = response['attributes']['total']
+                if total == None:
+                    LOG.debug("ERROR: total is None")
+                else:
+                    return response
+            except Exception as e:
+                LOG.exception(e)
 
-        return response
+        raise GatewayException()
+
 
     def _generate_name_key(self, key, search):
         return key + "_" + search
@@ -81,8 +89,7 @@ class ForvoGateway(object):
 
     def _send_request(self, url):
         LOG.debug("sending url: "+url)
-        
-        response = web.get(url)
+        response = web.get(url, timeout = ForvoGateway.timeout)
         response.raise_for_status()
         return response
 
