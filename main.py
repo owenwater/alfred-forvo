@@ -6,6 +6,8 @@ from workflow import Workflow
 from config_loader import ConfigLoader
 from config import user_file
 from error import GatewayException
+from cache import Cache
+
 LOG = None
 
 class Main(object):
@@ -23,14 +25,16 @@ class Main(object):
         try:
             gateway = Gateway(self.config, wf)
             items = gateway.word_search(self.args)
+            self._add_items(items)
+            self.wf.send_feedback()
         except Exception as e:
             self.wf.add_item("Forvo API seems down, please try again later", 
                             subtitle = "Error: " + str(e),)
             self.wf.send_feedback()
-            return
+        #cleanup
 
-        self._add_items(items)
-        self.wf.send_feedback()
+        cache = Cache()
+        cache.clean()
 
     def _add_items(self, items):
         for item in items:
