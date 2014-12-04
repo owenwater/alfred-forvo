@@ -9,6 +9,7 @@ from error import GatewayException
 from cache import Cache
 
 LOG = None
+LINE = unichr(0x2500) * 20
 
 class Main(object):
     def __init__(self, args):
@@ -26,12 +27,19 @@ class Main(object):
             gateway = Gateway(self.config, wf)
             items = gateway.word_search(self.args)
             self._add_items(items)
-            self.wf.send_feedback()
         except Exception as e:
             self.wf.add_item("Forvo API seems down, please try again later", 
                             subtitle = "Error: " + str(e),)
-            self.wf.send_feedback()
         #cleanup
+            
+
+        self.wf.add_item(LINE, 
+                         subtitle="Pronunciations by Forvo",
+                         arg="http://www.forvo.com/",
+                         valid = True,
+                         icon = "image/blank.png"
+                        )
+        self.wf.send_feedback()
 
         cache = Cache()
         cache.clean()
