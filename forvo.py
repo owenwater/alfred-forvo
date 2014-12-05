@@ -19,13 +19,13 @@ LOG = None
 class ForvoGateway(object):
 
     expire_time = 7200
-    timeout=10
+    timeout=7
 
     def __init__(self, config, wf):
         key = config['key']
-        lang = config.get('lang', options['lang']['default'])
+        self.lang = config.get('lang', options['lang']['default'])
         self.num = config.get('num', options['num']['default'])
-        self.url = self._generate_url(key, lang, self.num)
+        self.url = self._generate_url(key, self.lang, self.num)
 
         self.wf = wf
         global LOG
@@ -51,6 +51,7 @@ class ForvoGateway(object):
         def parse(item):
             parsed_item = {}
             parsed_item['word'] = item['original']
+            parsed_item['word_link'] = item['word']
             parsed_item['num'] = item['num_pronunciations']
             pronunciation = item['standard_pronunciation']
             parsed_item['language'] = pronunciation['langname']
@@ -92,7 +93,7 @@ class ForvoGateway(object):
 
 
     def _generate_name_key(self, key, search):
-        return key + "_" + search
+        return key + "_" + search + "_" + self.lang
 
 
     def _send_request(self, url):

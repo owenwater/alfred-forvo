@@ -11,6 +11,8 @@ from cache import Cache
 LOG = None
 LINE = unichr(0x2500) * 20
 
+forvo_url = "http://www.forvo.com/"
+
 class Main(object):
     def __init__(self, args):
         self.args = unicode(args.strip(), 'utf-8')
@@ -27,32 +29,42 @@ class Main(object):
             gateway = Gateway(self.config, wf)
             items = gateway.word_search(self.args)
             self._add_items(items)
+            self._add_logo()
         except Exception as e:
             self.wf.add_item("Forvo API seems down, please try again later", 
                             subtitle = "Error: " + str(e),)
-        #cleanup
             
 
-        self.wf.add_item(LINE, 
-                         subtitle="Pronunciations by Forvo",
-                         arg="http://www.forvo.com/",
-                         valid = True,
-                         icon = "image/blank.png"
-                        )
         self.wf.send_feedback()
 
+        #cleanup
         cache = Cache()
         cache.clean()
+
+    def _add_logo(self):
+        self.wf.add_item(LINE, 
+                         subtitle="Pronunciations by Forvo",
+                         arg=forvo_url,
+                         valid = True,
+                         icon = "image/blank.png")
+
+
 
     def _add_items(self, items):
         for item in items:
             self.wf.add_item(
                 item['word'],
                 subtitle = self._generate_subtitle(item),
-                arg = item['sound'],
+                arg = self._generate_arg(item['sound'], item['word_link']), 
                 valid = True,
                 autocomplete = item['word']
                 )
+
+    def _generate_arg(self, sound_url, word):
+        arg = sound_url + " " + forvo_url + "word/" + word
+        if self.config.get('lang', 'all') != 'all':
+            arg += "/#" + self.config['lang']
+        return arg
 
 
     def _generate_subtitle(self, item):
