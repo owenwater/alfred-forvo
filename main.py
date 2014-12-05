@@ -11,7 +11,7 @@ from cache import Cache
 LOG = None
 LINE = unichr(0x2500) * 20
 
-forvo_url = "http://www.forvo.com/"
+forvo_url = u"http://www.forvo.com/"
 
 class Main(object):
     def __init__(self, args):
@@ -61,7 +61,8 @@ class Main(object):
                 )
 
     def _generate_arg(self, sound_url, word):
-        arg = sound_url + " " + forvo_url + "word/" + word
+        import urllib
+        arg = sound_url + u" " + forvo_url + u"word/" + urllib.quote(word.encode('utf-8'))
         if self.config.get('lang', 'all') != 'all':
             arg += "/#" + self.config['lang']
         return arg

@@ -58,12 +58,12 @@ def speak(url):
 
 def open(url):
     import webbrowser
-    webbrowser.open(url)
+    webbrowser.open_new_tab(url)
 
 
 def handle(url, is_speak = True):
     url0, _, url1 = url.partition(' ')
-    if url1 == "":
+    if url1 == u"":
         url1 = url0
     if is_speak:
         speak(url0)
@@ -77,4 +77,4 @@ if __name__=="__main__":
     #speak(hello)
     #speak(ts)
     #open("http://www.forvo.com/")
-    handle("http://www.forvo.com/", False)
+    #handle(u"http://www.forvo.com/word/\u4f60", False)
