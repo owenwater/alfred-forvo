@@ -16,10 +16,11 @@ word_search_action = "pronounced-words-search"
 
 LOG = None
 
+
 class ForvoGateway(object):
 
     expire_time = 7200
-    timeout=7
+    timeout = 7
 
     def __init__(self, config, wf):
         key = config['key']
@@ -33,15 +34,15 @@ class ForvoGateway(object):
 
     def word_search(self, word):
         name_key = self._generate_name_key(word_search_action, word)
-        response = self.wf.cached_data(name_key, 
+        response = self.wf.cached_data(name_key,
                                        lambda: self._send_word_search_request(word),
                                        max_age=ForvoGateway.expire_time)
 
         total = response['attributes']['total']
         pagesize = response['attributes']['pagesize']
 
-        if int(pagesize) < int(self.num) and int(total) > int(pagesize): 
-            #not enough entry be loaded and there're more remaine
+        if int(pagesize) < int(self.num) and int(total) > int(pagesize):
+            # not enough entry be loaded and there're more remaine
             response = self._send_word_search_request(word)
             self.wf.cache_data(name_key, response)
 
@@ -57,13 +58,12 @@ class ForvoGateway(object):
             parsed_item['language'] = pronunciation['langname']
             parsed_item['sound'] = pronunciation['pathmp3']
             parsed_item['country'] = pronunciation['country']
-            parsed_item['rank'] = str(pronunciation['num_positive_votes']) + " up votes" 
+            parsed_item['rank'] = str(pronunciation['num_positive_votes']) + " up votes"
             return parsed_item
         return [parse(item) for item in items]
             
-
     def _send_word_search_request(self, word):
-        count = 0 
+        count = 0
         error_msg = ""
         while count < 3:
             count += 1
@@ -79,7 +79,7 @@ class ForvoGateway(object):
                     error_msg = response[0]
                     raise GatewayException(error_msg)
                 total = response['attributes']['total']
-                if total == None:
+                if total is None:
                     LOG.debug("ERROR: total is None")
                 else:
                     return response
@@ -91,14 +91,12 @@ class ForvoGateway(object):
 
         raise GatewayException(error_msg)
 
-
     def _generate_name_key(self, key, search):
         return key + "_" + search + "_" + self.lang
 
-
     def _send_request(self, url):
-        LOG.debug("sending url: "+url)
-        response = web.get(url, timeout = ForvoGateway.timeout)
+        LOG.debug("sending url: " + url)
+        response = web.get(url, timeout=ForvoGateway.timeout)
         response.raise_for_status()
         return response
 
@@ -109,7 +107,6 @@ class ForvoGateway(object):
         url += pagesize_tem %(num)
         return url
         
-
 
 if __name__=="__main__":
     from workflow import Workflow

@@ -10,7 +10,6 @@ LOG = None
 
 
 class Cache(object):
-    
     LAST_CLEAN_TIME = 'last-clean-time'
 
     def __init__(self):

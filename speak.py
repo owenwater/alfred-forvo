@@ -7,23 +7,26 @@ from workflow import Workflow
 wf = Workflow()
 LOG = wf.logger
 
+
 def _get_sound_by_url(ns_url):
     sound = NSSound.alloc()
     sound.initWithContentsOfURL_byReference_(ns_url, False)
     return sound
+
 
 def _get_sound_by_fname(fname):
     sound = NSSound.alloc()
     sound.initWithContentsOfFile_byReference_(fname, True)
     return sound
 
+
 def _download_file(url):
     import urllib
     import os
-    _,_,name = url.rpartition('/')
+    _, _, name = url.rpartition('/')
     filename = wf.cachefile(name) + ".mp3"
     if not os.path.isfile(filename):
-        LOG.debug("retrieving file: "+url)
+        LOG.debug("retrieving file: " + url)
         urllib.urlretrieve(url, filename)
 
     return filename
@@ -44,6 +47,7 @@ def speak_stream(url):
     sound = _get_sound_by_url(ns_url)
     _play_sound(sound)
     
+
 def speak_download(url):
     filename = _download_file(url)
     sound = _get_sound_by_fname(filename)
@@ -56,12 +60,13 @@ def speak(url):
         return
     speak_download(url)
 
+
 def open(url):
     import webbrowser
     webbrowser.open_new_tab(url)
 
 
-def handle(url, is_speak = True):
+def handle(url, is_speak=True):
     url0, _, url1 = url.partition(' ')
     if url1 == u"":
         url1 = url0

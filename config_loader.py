@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
-import sys
 import json
+
 
 class ConfigLoader(object):
 
-    def __init__(self, path, create_if_fail = False):
+    def __init__(self, path, create_if_fail=False):
         self.path = path
         try:
             with open(path) as fp:
@@ -15,16 +15,13 @@ class ConfigLoader(object):
                 self.config = {}
                 self.save()
 
-
-
     def __getitem__(self, key):
         return self.config[key]
     
     def __contains__(self, key):
         return key in self.config
 
-
-    def get(self, key, default_value = None):
+    def get(self, key, default_value=None):
         return self[key] if key in self else default_value
     
     def __setitem__(self, key, value):

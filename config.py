@@ -10,9 +10,9 @@ lang_file = "config/lang.json"
 user_file = "config/user.json"
 
 options = {
-    "lang" : { "desc": u"Set search language", "default" : u"all"},
-    "num" : { "desc": u"Set maximum number of words to be shown", "default" : u"10"},
-    "config" : { "desc": u"Open config file", "arg" : u"open_"},
+    "lang": {"desc": u"Set search language", "default": u"all"},
+    "num": {"desc": u"Set maximum number of words to be shown", "default": u"10"},
+    "config": {"desc": u"Open config file", "arg": u"open_"},
 }
 
 
@@ -30,39 +30,36 @@ class Config(object):
         self.wf = wf
         LOG = wf.logger
         sys.exit(wf.run(self.main))
-    
+
     def main(self, wf):
         if self.args == "":
             self.show_options_menu(options.keys())
         else:
             self.handle_args()
-        
+
         self.wf.send_feedback()
 
     def handle_args(self):
         argv = self.args.split()
         show_options = filter(lambda option: option.startswith(argv[0]), options.keys())
 
-
         if len(show_options) == 0:
             show_options = options.keys()
-        elif len(show_options) == 1 and hasattr(self, Config.SHOW_PREFIX+argv[0]):
-            getattr(self, Config.SHOW_PREFIX+argv[0])(' '.join(argv[1:]))
+        elif len(show_options) == 1 and hasattr(self, Config.SHOW_PREFIX + argv[0]):
+            getattr(self, Config.SHOW_PREFIX + argv[0])(' '.join(argv[1:]))
             return
         self.show_options_menu(show_options)
-    
-        
 
     def show_lang(self, arg):
         import json
         arg = unicode(arg, "utf-8")
         with open(lang_file) as fp:
             lang_list = json.load(fp)
-        
+
         arg = arg.strip().lower()
         if arg == "":
             self.wf.add_item("Type to search the language (all for All Languages)")
-            return 
+            return
         
         def lang_matched(lang):
             if lang["code"].startswith(arg) \
@@ -75,13 +72,12 @@ class Config(object):
         lang_list = filter(lang_matched, lang_list)
         
         for lang in lang_list:
-            self.wf.add_item(lang["lang"] + 
-                             self._append_name(lang["native"]) + 
+            self.wf.add_item(lang["lang"] +
+                             self._append_name(lang["native"]) +
                              self._append_name(lang.get("native2", "")),
-                             subtitle = lang["code"],
-                             arg = self._generate_arg('lang', lang["code"]),
-                             valid = True)
-
+                             subtitle=lang["code"],
+                             arg=self._generate_arg('lang', lang["code"]),
+                             valid=True)
 
     def show_num(self, arg):
         try:
@@ -90,14 +86,14 @@ class Config(object):
                 self.wf.add_item("Value must be between 1 and 100")
             else:
                 title = "Set to %d" %(value)
-                self.wf.add_item(title, 
-                                 arg = self._generate_arg('num', str(value)),
-                                 valid = True)
+                self.wf.add_item(title,
+                                 arg=self._generate_arg('num', str(value)),
+                                 valid=True)
         except ValueError:
             self.wf.add_item(options['num']['desc'])
 
     def show_config(self, arg):
-        self.wf.add_item("Open the config file", arg = "config", valid = True)
+        self.wf.add_item("Open the config file", arg="config", valid=True)
 
     def show_options_menu(self, options):
         for option in options:
@@ -121,8 +117,8 @@ class Config(object):
 
     def _add_all_languages_item(self):
         self.wf.add_item("All Languages",
-                        arg = "all",
-                        valid = True)
+                        arg="all",
+                        valid=True)
                         
     def _generate_arg(self, key, value):
         return key + Config.SEPARATOR + value
@@ -133,14 +129,13 @@ class Config(object):
             subtitle = u"Current: " + subtitle
 
         self.wf.add_item(options[option]['desc'],
-                         subtitle = subtitle,
-                         autocomplete = option + " ",
-                         valid = 'arg' in options[option],
-                         arg = options[option].get('arg', "") + option)
-
+                         subtitle=subtitle,
+                         autocomplete=option + " ",
+                         valid='arg' in options[option],
+                         arg=options[option].get('arg', "") + option)
 
 
 if __name__=="__main__":
-    config= Config(' '.join(sys.argv[1:]))
+    config = Config(' '.join(sys.argv[1:]))
     #config.execute()
     config.save_update()
