@@ -55,7 +55,7 @@
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>keyword</key>
-				<string>speak</string>
+				<string>forvo</string>
 				<key>runningsubtext</key>
 				<string>Loading...</string>
 				<key>script</key>
@@ -133,7 +133,7 @@ if __name__=="__main__":
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>keyword</key>
-				<string>sconfig</string>
+				<string>fconfig</string>
 				<key>script</key>
 				<string>#!/usr/bin/python
 
