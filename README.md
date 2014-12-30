@@ -25,6 +25,6 @@ A pronunciation software based on Alfred Workflow and [Forvo.com](http://www.for
 ![screenshot2](screenshots/screenshot2.png?raw=true)
 
 #Copyright
-- [Alfred-workflow](https://github.com/deanishe/alfred-workflow)) are licensed under the [MIT](http://opensource.org/licenses/MIT) and [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/legalcode) respectively.
+- [Alfred-workflow](https://github.com/deanishe/alfred-workflow) are licensed under the [MIT](http://opensource.org/licenses/MIT) and [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/legalcode) respectively.
 - All pronunciations and word lists are provided by [Forvo.com](http://www.forvo.com/) and licensed under the [CC BY-NCNC-SA 3.0](https://creativecommons.org/licenses/by-nc-sa/3.0/).
-- All other code and documents are licensed under [MIT]{http://opensource.org/licenses/MIT}
+- All other code and documents are licensed under [MIT](http://opensource.org/licenses/MIT)
