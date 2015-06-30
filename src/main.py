@@ -6,6 +6,7 @@ from workflow import Workflow
 from config_loader import ConfigLoader
 from config import user_file
 from cache import Cache
+from history import History
 
 LOG = None
 LINE = unichr(0x2500) * 20
@@ -26,6 +27,12 @@ class Main(object):
         sys.exit(wf.run(self.main))
 
     def main(self, wf):
+    
+        history = History(wf)
+        if self.args == u'':
+            self._show_history(history.get_history())
+            return
+
         try:
             gateway = Gateway(self.config, wf)
             items = gateway.word_search(self.args)
@@ -74,6 +81,17 @@ class Main(object):
         )
         return subtitle
 
+    def _show_history(self, history_list):
+        if not history_list:
+            self.wf.add_item('Please enter the word')
+        else:
+            for history in history_list:
+                self.wf.add_item(history, 
+                                 valid=False,
+                                 autocomplete=history)
+
+        self._add_logo()
+        self.wf.send_feedback()
 
 if __name__=="__main__":
     m = Main(' '.join(sys.argv[1:]))

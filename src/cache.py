@@ -30,7 +30,7 @@ class Cache(object):
             return
         LOG.debug("cleaning cache file")
         for file in os.listdir(self.wf.cachedir):
-            if file.endswith(".log"):
+            if file.endswith(".log") or file == "history.cpickle":
                 continue
             if not self.wf.cached_data_fresh(file, AGE):
                 LOG.debug("deleting cache file: " + file)
