@@ -4,6 +4,7 @@ from Foundation import NSURL
 from time import sleep
 from workflow import Workflow
 from history import History
+import urllib
 
 wf = Workflow()
 LOG = wf.logger
@@ -70,8 +71,12 @@ def open(url):
 def handle(url, is_speak=True):
     history = History(wf)
     url0, _, url1 = url.partition(' ')
-    _,_,word = url1.rpartition('/')
-    history.add_history(word)
+    try:
+        words = url1.split('/')
+        word = words[words.index('word')+1]
+        history.add_history(urllib.unquote(word).decode('utf8'))
+    except ValueError:
+        pass
     if url1 == u"":
         url1 = url0
     if is_speak:

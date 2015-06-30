@@ -61,7 +61,7 @@ class Main(object):
                 item['word'],
                 subtitle=self._generate_subtitle(item),
                 arg=self._generate_arg(item['sound'], item['word_link']),
-                modifier_subtitles={'cmd':'open ' + self._generate_word_url(item['word_link'])},
+                modifier_subtitles={'cmd':'open ' + self._generate_word_url(item['word_link'], quote=False)},
                 valid=True,
                 autocomplete=item['word'])
 
@@ -69,9 +69,9 @@ class Main(object):
         arg = sound_url + u" " + self._generate_word_url(word)
         return arg
 
-    def _generate_word_url(self, word):
+    def _generate_word_url(self, word, quote=True):
         import urllib
-        url = forvo_url + u"word/" + urllib.quote(word.encode('utf-8'))
+        url = forvo_url + u"word/" + (urllib.quote(word.encode('utf-8')) if quote else word)
         if self.config.get('lang', 'all') != 'all':
             url += "/#" + self.config['lang']
         return url
@@ -90,14 +90,17 @@ class Main(object):
 
     def _show_history(self, history_list):
         if not history_list:
-            self.wf.add_item('Please enter the word')
+            self.wf.add_item('Please enter your words')
         else:
             for history in history_list:
                 self.wf.add_item(history, 
                                  valid=False,
                                  autocomplete=history)
+                
+            self.wf.add_item(u"- History List -",
+                             valid=False,
+                             icon="image/blank.png")
 
-        self._add_logo()
         self.wf.send_feedback()
 
 if __name__=="__main__":
