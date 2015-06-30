@@ -61,15 +61,22 @@ class Main(object):
                 item['word'],
                 subtitle=self._generate_subtitle(item),
                 arg=self._generate_arg(item['sound'], item['word_link']),
+                modifier_subtitles={'cmd':'open ' + self._generate_word_url(item['word_link'])},
                 valid=True,
                 autocomplete=item['word'])
 
     def _generate_arg(self, sound_url, word):
-        import urllib
-        arg = sound_url + u" " + forvo_url + u"word/" + urllib.quote(word.encode('utf-8'))
-        if self.config.get('lang', 'all') != 'all':
-            arg += "/#" + self.config['lang']
+        arg = sound_url + u" " + self._generate_word_url(word)
         return arg
+
+    def _generate_word_url(self, word):
+        import urllib
+        url = forvo_url + u"word/" + urllib.quote(word.encode('utf-8'))
+        if self.config.get('lang', 'all') != 'all':
+            url += "/#" + self.config['lang']
+        return url
+
+
 
     def _generate_subtitle(self, item):
         subtitle = "%s from %s, %s in %s pronunciation%s" %(
