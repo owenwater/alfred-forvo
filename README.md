@@ -2,6 +2,8 @@
 
 A pronunciation software based on Alfred Workflow and [Forvo.com](http://www.forvo.com/).
 
+(The default API of Forvo.com is expired.)
+
 #Install
 - Have access to Alfred [Powerpack](http://www.alfredapp.com/powerpack/).
 - Download and open the [workflow](Forvo.alfredworkflow?raw=true).
